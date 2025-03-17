@@ -24,6 +24,7 @@ void getgraph(int a, int b) {
     }
     for (int i = 0; i < 4; i++) {
         if (mount[a][b] < mount[a + X[i]][b + Y[i]]) {
+            cout << "yes";
         }
     }
 }
