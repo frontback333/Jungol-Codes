@@ -9,7 +9,7 @@ struct Dta {
 };
 int N, Ai, Aj, mn = 2e8;
 int mount[105][105], ck[105][105];
-int vst[105][105], dist[105][105];
+int visit[105][105], dist[105][105];
 int X[6] = {-1, 1, 0, 0}, Y[6] = {0, 0, -1, 1};
 vector<Dta> adj[105][105];
 priority_queue<Dta> pq;
@@ -23,10 +23,10 @@ void dijkstra() {
     while (!pq.empty()) {
         Dta t = pq.top();
         pq.pop();
-        if (vst[t.ui][t.uj]) continue;
-        vst[t.ui][t.uj] = 1;
+        if (visit[t.ui][t.uj]) continue;
+        visit[t.ui][t.uj] = 1;
         for (const Dta& a : adj[t.ui][t.uj]) {
-            if (!vst[a.ui][a.uj] && dist[a.ui][a.uj] > t.d + a.d) {
+            if (!visit[a.ui][a.uj] && dist[a.ui][a.uj] > t.d + a.d) {
                 dist[a.ui][a.uj] = t.d + a.d;
                 pq.push({a.ui, a.uj, dist[a.ui][a.uj]});
             }
