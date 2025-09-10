@@ -1,42 +1,38 @@
 #include <bits/stdc++.h>
 using namespace std;
 using ll = long long;
-struct Dta {
-    ll price;
-    map<ll, ll> used;
-};
-int N, P;
-int gain[25][305];
-Dta D[305];
+ll P, N;
+ll gain[25][305], D[25][305], ans[25][305];
 
-void DP(int pce) {
-    if (pce > P) return;
-    for (int i = pce - 1; i >= 0; i--) {
-        for (int j = 1; j <= N; j++) {
-            if (D[i].used[j]) continue;
-            if (D[pce].price < D[i].price + gain[j][pce - i]) {
-                D[pce].price = D[i].price + gain[j][pce - i];
-                D[pce].used = D[i].used;
-                D[pce].used[j] = pce - i;
+void doD(ll row) {
+    if (row > N) return;
+    for (int i = 1; i <= P; i++) {
+        for (int j = 0; j <= i; j++) {
+            if (D[row - 1][j] + gain[row][i - j] > D[row][i]) {
+                D[row][i] = D[row - 1][j] + gain[row][i - j];
+                ans[row][i] = i - j;
             }
         }
     }
-    DP(pce + 1);
+    doD(row + 1);
 }
 
 int main() {
     cin >> P >> N;
     for (int i = 1; i <= P; i++) {
-        int pg, a;
-        cin >> pg;
+        int tmp;
+        cin >> tmp;
         for (int j = 1; j <= N; j++) {
-            cin >> a;
-            gain[j][pg] = a;
+            cin >> gain[j][tmp];
         }
     }
-    DP(1);
-    cout << D[P].price << '\n';
-    for (auto i : D[P].used) {
-        cout << i.second << ' ';
+    vector<int> ct;
+    doD(1);
+    cout << D[N][P] << '\n';
+    for (int i = N; i > 0; i--) {
+        ct.push_back(ans[i][P]);
+        P -= ans[i][P];
     }
+    reverse(ct.begin(), ct.end());
+    for (int i : ct) cout << i << ' ';
 }

@@ -1,50 +1,41 @@
-//D[i] = B ±âÁØ i ¹ø¤Š ±îÁöÀÇ ÃÖÀå ºÎºÐ Áõ°¡ ¼ö¿­
-//D[i] = i º¸´Ù ÀÛÀº ÃÖ´ñ°ªk ÀÇ D[k] + 1
-#include<bits/stdc++.h>
+// D[i] = B ï¿½ï¿½ï¿½ï¿½ i ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Îºï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+// D[i] = i ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½k ï¿½ï¿½ D[k] + 1
+#include <bits/stdc++.h>
 using namespace std;
 using ll = long long;
-struct light{
-    int snum,lnum;
-};
-struct Dt{
-    int val,origin;
-};
-light P[10005] = {{0,0}};
-map<ll,ll>inptos;
-vector<int> cvec;
-Dt D[10005] = {1};
-ll N,tmp,mx = 0;
+ll N, ans, lstidx;
+ll mp[10005], switches[10005], D[10005], lst[10005];
+vector<ll> ct;
 
-int main(){
+int main() {
     cin.tie(0)->sync_with_stdio(0);
-    cin>>N;
-    for(ll i=1;i<=N;i++){
-        cin>>P[i].snum;
-        inptos[P[i].snum]=i;
+    cin >> N;
+    for (int i = 1; i <= N; i++) cin >> switches[i];
+    for (int i = 1; i <= N; i++) {
+        ll a;
+        cin >> a;
+        mp[a] = i;
+        D[i] = 1;
     }
-    for(ll i=1;i<=N;i++){
-        cin>>tmp;
-        P[i].lnum = inptos[tmp];
-    }
-    for(ll i=1;i<=N;i++){
-        mx=0; tmp=0;
-        for(ll j=1;j<i;j++){
-            if(P[j].lnum<P[i].lnum && mx<D[j].val){
-                mx=D[j].val; tmp = j;
+    for (int i = 1; i <= N; i++) {
+        for (int j = 1; j < i; j++) {
+            if (mp[switches[i]] > mp[switches[j]] && D[i] <= D[j] + 1) {
+                lst[i] = j;
+                D[i] = D[j] + 1;
             }
         }
-        D[i].val = mx + 1; D[i].origin = tmp;
     }
-    mx = 0; tmp = 0;
-    for(ll i=1;i<=N;i++)if(D[i].val > mx){mx=D[i].val; tmp=i;}
-    while(tmp){
-        //cout<<P[tmp].snum<<' ';
-        cvec.push_back(P[P[tmp].snum].snum);
-        tmp = D[tmp].origin;
+    for (int i = 1; i <= N; i++) {
+        if (ans < D[i]) {
+            ans = D[i];
+            lstidx = i;
+        }
     }
-    cout<<mx<<'\n';
-    sort(cvec.begin(), cvec.begin() + mx);
-    for(ll i : cvec){
-        cout<<i<<' ';
+    cout << ans << '\n';
+    while (lstidx) {
+        ct.push_back(switches[lstidx]);
+        lstidx = lst[lstidx];
     }
+    sort(ct.begin(), ct.end());
+    for (auto i : ct) cout << i << ' ';
 }

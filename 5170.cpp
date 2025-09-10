@@ -1,21 +1,29 @@
 #include <bits/stdc++.h>
 using namespace std;
 using ll = long long;
-ll X, Y, Z;
+ll N, M, mx;
+ll arr[1000005];
 
-ll BinS(ll s, ll e) {
-    if (e < s) return s;
-    int m = s + e >> 1;
-    if ((Y + m) * 100 / (X + m) > Z)
-        return BinS(s, m - 1);
+ll minPar(ll s, ll e) {
+    if (e < s) return e;
+    ll m = s + e >> 1;
+    ll sum = 0;
+    for (int i = 0; i < N; i++) {
+        if (arr[i] - m > 0) sum += arr[i] - m;
+    }
+    if (sum >= M)
+        return minPar(m + 1, e);
     else
-        return BinS(m + 1, e);
+        return minPar(s, m - 1);
 }
 
 int main() {
     cin.tie(0)->sync_with_stdio();
-    cin >> X >> Y;
-    Z = (Y * 100) / X;
-    ll ans = BinS(1, 1e9);
-    (ans > 1e9) ? cout << -1 : cout << ans;
+    cin >> N >> M;
+    for (int i = 0; i < N; i++) {
+        cin >> arr[i];
+        if (arr[i] > mx) mx = arr[i];
+    }
+    sort(arr, arr + N);
+    cout << minPar(0, mx);
 }

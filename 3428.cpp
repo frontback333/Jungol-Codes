@@ -1,44 +1,28 @@
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
 using namespace std;
 using ll = long long;
-ll N,cnt=0,temp=0;
-vector<ll>smaller[100010];
-vector<ll>bigger[100010];
-ll checkarr[100010] = {};
+ll N, M, X, bet, bad, vis[100005];
+vector<int> students[3][100005];
 
-void CheckSmaller(ll self){
-    if(checkarr[self])return;
-    checkarr[self] = 1;
-    temp++;
-    for(ll i : smaller[self]){
-        CheckSmaller(i);
-    }
-    return;
+ll DFS(ll num, ll type) {
+    ll cnt = 1;
+    vis[num] = 1;
+    for (ll i : students[type][num])
+        if (!vis[i]) cnt += DFS(i, type);
+    return cnt;
 }
 
-void CheckBigger(ll self){
-    if(checkarr[self]==1)return;
-    checkarr[self] = 1;
-    temp++;
-    for(ll i : bigger[self]){
-        CheckBigger(i);
+int main() {
+    cin.tie(0)->sync_with_stdio();
+    cin >> N >> M >> X;
+    while (M--) {
+        ll a, b;
+        cin >> a >> b;
+        students[0][b].push_back(a);
+        students[1][a].push_back(b);
     }
-    return;
-}
-
-int main(){
-    //cin.tie(0)->sync_with_stdio(0);
-    ll M,X,t1,t2;
-    cin>>N>>M>>X;
-    while(M--){
-        cin>>t1>>t2;
-        smaller[t1].push_back(t2);
-        bigger[t2].push_back(t1);
-    }
-    CheckBigger(X);
-    cout<<temp<<' ';
-    checkarr[X]=0;
-    temp=0;
-    CheckSmaller(X);
-    cout<<N-temp+1;
+    ll big = DFS(X, 0);
+    for (int i = 1; i <= N; i++) vis[i] = 0;
+    ll small = DFS(X, 1);
+    cout << big << ' ' << N - small + 1;
 }
